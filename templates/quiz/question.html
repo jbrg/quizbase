@@ -2,7 +2,7 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="/question/{{ question.id }}/correct/" method="post">
+<form action="/quiz/collection/question/{{ question.id }}/correct/" method="post">
 {% csrf_token %}
 {% for choice in question.choice_set.all %}
   <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
@@ -11,5 +11,5 @@
 <input type="submit" value="Correct" />
 {% if corrected %}<p><strong>{{ corrected }}</strong></p>{% endif %}
 </form>
-<a href="/question/{{ question.id }}/previous/">«««</a>|<a href="/question/{{ question.id }}/next/">»»»</a>
+<a href="/quiz/collection/question/{{ question.id }}/previous/">«««</a>|<a href="/quiz/collection/question/{{ question.id }}/next/">»»»</a>
 <form>

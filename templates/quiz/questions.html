@@ -1,0 +1,10 @@
+<h1>{{collection.name}}</h1>
+{% if questionList %}
+  <ul>
+    {% for question in questionList %}
+      <li><a href="/quiz/collection/question/{{question.id}}/">{{question.question}}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p> FART </p>
+{% endif %}

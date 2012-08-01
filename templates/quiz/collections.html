@@ -1,0 +1,9 @@
+{% if collectionList %}
+  <ul>
+    {% for collection in collectionList %}
+      <li><a href="/quiz/collection/{{collection.id}}/">{{collection.name}}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p> FART ...i really need to fix that </p>
+{% endif %}
