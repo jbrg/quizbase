@@ -1,9 +1,0 @@
-{% if questionList %}
-  <ul>
-    {% for question in questionList %}
-      <p> {{question.question}} </p>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p> FART </p>
-{% endif %}
