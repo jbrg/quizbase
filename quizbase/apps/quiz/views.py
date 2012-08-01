@@ -1,4 +1,6 @@
 # Create your views here.
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from quizbase.apps.quiz.models import Question, Choice
@@ -26,3 +28,17 @@ def correct(request, question_id):
     return render_to_response("quiz/question.html", 
                               {"question": q, "corrected": corrected},
                               context_instance=RequestContext(request))
+
+def previous(request, question_id):
+    question_id = int(question_id) -1
+    if question_id < 1:
+        question_id = len(Question.objects.all())
+    
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.question", args={question_id}))
+
+def next(request, question_id):
+    question_id = int(question_id) +1
+    if question_id > len(Question.objects.all()):
+        question_id = 1
+    
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.question", args={question_id}))

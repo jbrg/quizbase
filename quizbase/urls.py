@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^quiz/$', 'quizbase.apps.quiz.views.index'),
     url(r'^question/(?P<question_id>\d+)/$', 'quizbase.apps.quiz.views.question'),
     url(r'^question/(?P<question_id>\d+)/correct/$', 'quizbase.apps.quiz.views.correct'),
+    url(r'^question/(?P<question_id>\d+)/previous/$', 'quizbase.apps.quiz.views.previous'),
+    url(r'^question/(?P<question_id>\d+)/next/$', 'quizbase.apps.quiz.views.next'),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
