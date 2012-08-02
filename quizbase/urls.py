@@ -27,4 +27,6 @@ urlpatterns += patterns('quizbase.apps.quiz.views',
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/correct/$', 'correctQuestion'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/next/$', 'nextQuestion'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/previous/$', 'previousQuestion'),
+                        url(r'^quiz/new/$', 'newQuestion'),
+                        url(r'^quiz/new/add/.*$', 'addQuestion'),
 )

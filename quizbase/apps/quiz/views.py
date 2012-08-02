@@ -54,3 +54,43 @@ def nextQuestion(request, question_id):
         question_id = 1
     
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
+
+def newQuestion(request):
+    collectionList = Collection.objects.all()
+    return render_to_response("quiz/newQuestion.html",
+                              {"collectionList": collectionList},
+                              context_instance=RequestContext(request))
+
+def addQuestion(request):
+    newQuestionEntry = Question()
+    collectionToAddTo = Collection.objects.get(pk=request.POST['newQuestionCollection'])
+    newQuestionEntry.collection = collectionToAddTo
+    newQuestionEntry.question = request.POST['newQuestion']
+    newQuestionEntry.save()
+    
+    choice1 = Choice()
+    choice1.question = newQuestionEntry
+    choice1.choice = request.POST['newQuestionChoice1']
+    choice1.save()
+    
+    choice2 = Choice()
+    choice2.question = newQuestionEntry
+    choice2.choice = request.POST['newQuestionChoice2']
+    choice2.save()
+    
+    choice3 = Choice()
+    choice3.question = newQuestionEntry
+    choice3.choice = request.POST['newQuestionChoice3']
+    choice3.save()
+    
+    choice4 = Choice()
+    choice4.question = newQuestionEntry
+    choice4.choice = request.POST['newQuestionChoice4']
+    choice4.save()
+    
+    correctAnswer = CorrectAnswer()
+    correctAnswer.question = newQuestionEntry
+    correctAnswer.answer = choice1
+    correctAnswer.save()
+    
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newQuestion", args={}))
