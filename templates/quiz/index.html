@@ -1,3 +1,4 @@
+<h1>Collections</h1>
 {% if collectionList %}
   <ul>
     {% for collection in collectionList %}
@@ -8,13 +9,15 @@
   <p><strong>No collections available.<strong></p>
 {% endif %}
 <br />
+<h1>Add stuff</h1>
 <form action="/quiz/add/collection/" method="POST">
 {% csrf_token %}
-New collection: <input type="text" name="newCollectionName" /><br />
+New collection: <br />
+<input type="text" name="newCollectionName" />
 <input type="submit" value="Add">
 </form>
 <br />
-New question <br />
+New question: <br />
 <form action="/quiz/add/question/" method="POST">
 {% csrf_token %}
 <select name="newQuestionCollection" >

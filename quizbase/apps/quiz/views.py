@@ -44,17 +44,27 @@ def correctQuestion(request, question_id):
                               context_instance=RequestContext(request))
 
 def previousQuestion(request, question_id):
-    question_id = int(question_id) -1
-    if question_id < 1:
-        question_id = len(Question.objects.all())
-    
+    currentQuestion = Question.objects.get(pk=question_id)
+    questionList = currentQuestion.collection.question_set.all()
+    for i, question in enumerate(questionList):
+        if question.id == currentQuestion.id:
+            questionIndice = i
+    questionIndice -= 1
+    if questionIndice < 0:
+        questionIndice = (len(questionList) - 1)
+    question_id = questionList[questionIndice].id
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
 def nextQuestion(request, question_id):
-    question_id = int(question_id) +1
-    if question_id > len(Question.objects.all()):
-        question_id = 1
-    
+    currentQuestion = Question.objects.get(pk=question_id)
+    questionList = currentQuestion.collection.question_set.all()
+    for i, question in enumerate(questionList):
+        if question.id == currentQuestion.id:
+            questionIndice = i
+    questionIndice += 1
+    if questionIndice == len(questionList):
+        questionIndice = 0
+    question_id = questionList[questionIndice].id   
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
 
