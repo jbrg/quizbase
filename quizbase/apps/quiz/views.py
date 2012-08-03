@@ -32,12 +32,11 @@ def viewQuestion(request, question_id):
 def correctQuestion(request, question_id):
     q = Question.objects.get(pk=question_id)
     selectedChoice = q.choice_set.get(pk=request.POST['choice'])
-    correctChoice = q.correctanswer_set.get()
-    
-    if selectedChoice == correctChoice.answer:
-        corrected = "Yay!"
-    else:
-        corrected = "Nay..."
+    correctChoiceList = q.correctanswer_set.all()
+    corrected = "Nay..."
+    for correctChoice in correctChoiceList:
+        if selectedChoice == correctChoice.answer:
+            corrected = "Yay!"
     
     return render_to_response("quiz/question.html", 
                               {"question": q, "corrected": corrected},
