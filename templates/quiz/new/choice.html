@@ -1,0 +1,10 @@
+<form action="/quiz/add/choice/{{question_id}}/" method="post">
+{% csrf_token %}
+  <input type="text" name="newChoiceChoice">
+  <input type="radio" name="correctAnswer" id="true" value="1">
+  <label for="true">True</label>
+  <input type="radio" name="correctAnswer" id="false" value="0">
+  <label for="false">False</label>
+  <input type="submit" value="Add">
+</form>
+<a href="/quiz/">Back</a>

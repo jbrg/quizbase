@@ -21,12 +21,14 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('quizbase.apps.quiz.views',
-                        url(r'^quiz/$', 'listCollections'),
+                        url(r'^quiz/$', 'index'),
                         url(r'^quiz/collection/(?P<collection_id>\d+)/$', 'browseCollection'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/$', 'viewQuestion'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/correct/$', 'correctQuestion'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/next/$', 'nextQuestion'),
                         url(r'^quiz/collection/question/(?P<question_id>\d+)/previous/$', 'previousQuestion'),
-                        url(r'^quiz/new/$', 'newQuestion'),
-                        url(r'^quiz/new/add/.*$', 'addQuestion'),
+                        url(r'^quiz/add/collection/$', 'addCollection'),
+                        url(r'^quiz/add/question/$', 'addQuestion'),
+                        url(r'^quiz/new/choice/(?P<question_id>\d+)/$', 'newChoice'),
+                        url(r'^quiz/add/choice/(?P<question_id>\d+)/$', 'addChoice'),
 )

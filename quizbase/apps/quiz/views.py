@@ -5,9 +5,11 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from quizbase.apps.quiz.models import *
 
-#def index(request): ## I assume there's no reason to have this
-#    questionList = Question.objects.all()
-#    return render_to_response("quiz/index.html", {"questionList": questionList})
+def index(request):
+    collectionList = Collection.objects.all()
+    return render_to_response("quiz/index.html", 
+                              {"collectionList": collectionList},
+                              context_instance=RequestContext(request))
 
 def listCollections(request):
     collectionList = Collection.objects.all()
@@ -55,42 +57,91 @@ def nextQuestion(request, question_id):
     
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
+
+def addCollection(request):
+    newCollectionName = request.POST['newCollectionName']
+    if Collection.objects.filter(name__exact=newCollectionName):
+        #return error stuff here
+        pass
+    newCollection = Collection()
+    newCollection.name = newCollectionName
+    newCollection.save()
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
+
 def newQuestion(request):
-    collectionList = Collection.objects.all()
+    collection_id = request.POST['collection_id']
     return render_to_response("quiz/newQuestion.html",
                               {"collectionList": collectionList},
                               context_instance=RequestContext(request))
 
 def addQuestion(request):
-    newQuestionEntry = Question()
-    collectionToAddTo = Collection.objects.get(pk=request.POST['newQuestionCollection'])
-    newQuestionEntry.collection = collectionToAddTo
-    newQuestionEntry.question = request.POST['newQuestion']
-    newQuestionEntry.save()
+    newQuestionQuestion = request.POST['newQuestionQuestion']
+    collection_id = request.POST['newQuestionCollection']
+    if Question.objects.filter(question__exact=newQuestionQuestion):
+        #return error stuff here
+        #Also, we probably want to be able to have the same question in different objects in different collections
+        pass
+    newQuestion = Question()
+    newQuestion.question = newQuestionQuestion
+    newQuestion.collection = Collection.objects.get(pk=collection_id)
+    newQuestion.save()
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={newQuestion.id}))
+
+def newChoice(request, question_id):
+    return render_to_response("quiz/new/choice.html",
+                              {"question_id": question_id},
+                              context_instance=RequestContext(request))
+
+def addChoice(request, question_id):
+    newChoiceChoice = request.POST['newChoiceChoice']
+    correctAnswer = int(request.POST['correctAnswer'])
+    if Choice.objects.filter(choice__exact=newChoiceChoice):
+        #return error stuff
+        #We don't want duplicate choices to the same question
+        pass
+    newChoice = Choice()
+    newChoice.choice = newChoiceChoice
+    newChoice.question = Question.objects.get(pk=question_id)
+    newChoice.save()
+    if correctAnswer == 1:
+        newCorrectAnswer = CorrectAnswer()
+        newCorrectAnswer.question = Question.objects.get(pk=question_id)
+        newCorrectAnswer.answer = newChoice
+        newCorrectAnswer.save()
+    else:
+        pass
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))
+
+# def addQuestion(request):
+#     newQuestionEntry = Question()
+#     collectionToAddTo = Collection.objects.get(pk=request.POST['newQuestionCollection'])
+#     newQuestionEntry.collection = collectionToAddTo
+#     newQuestionEntry.question = request.POST['newQuestion']
+#     newQuestionEntry.save()
     
-    choice1 = Choice()
-    choice1.question = newQuestionEntry
-    choice1.choice = request.POST['newQuestionChoice1']
-    choice1.save()
+#     choice1 = Choice()
+#     choice1.question = newQuestionEntry
+#     choice1.choice = request.POST['newQuestionChoice1']
+#     choice1.save()
     
-    choice2 = Choice()
-    choice2.question = newQuestionEntry
-    choice2.choice = request.POST['newQuestionChoice2']
-    choice2.save()
+#     choice2 = Choice()
+#     choice2.question = newQuestionEntry
+#     choice2.choice = request.POST['newQuestionChoice2']
+#     choice2.save()
     
-    choice3 = Choice()
-    choice3.question = newQuestionEntry
-    choice3.choice = request.POST['newQuestionChoice3']
-    choice3.save()
+#     choice3 = Choice()
+#     choice3.question = newQuestionEntry
+#     choice3.choice = request.POST['newQuestionChoice3']
+#     choice3.save()
     
-    choice4 = Choice()
-    choice4.question = newQuestionEntry
-    choice4.choice = request.POST['newQuestionChoice4']
-    choice4.save()
+#     choice4 = Choice()
+#     choice4.question = newQuestionEntry
+#     choice4.choice = request.POST['newQuestionChoice4']
+#     choice4.save()
     
-    correctAnswer = CorrectAnswer()
-    correctAnswer.question = newQuestionEntry
-    correctAnswer.answer = choice1
-    correctAnswer.save()
+#     correctAnswer = CorrectAnswer()
+#     correctAnswer.question = newQuestionEntry
+#     correctAnswer.answer = choice1
+#     correctAnswer.save()
     
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newQuestion", args={}))
+#     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newQuestion", args={}))

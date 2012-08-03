@@ -1,9 +1,26 @@
-{% if questionList %}
+{% if collectionList %}
   <ul>
-    {% for question in questionList %}
-      <li><a href="/question/{{question.id}}/">{{question.question}}</a></li>
+    {% for collection in collectionList %}
+      <li><a href="/quiz/collection/{{collection.id}}/">{{collection.name}}</a></li>
     {% endfor %}
   </ul>
 {% else %}
-  <p> FART </p>
+  <p><strong>No collections available.<strong></p>
 {% endif %}
+<br />
+<form action="/quiz/add/collection/" method="POST">
+{% csrf_token %}
+New collection: <input type="text" name="newCollectionName" /><br />
+<input type="submit" value="Add">
+</form>
+<br />
+New question <br />
+<form action="/quiz/add/question/" method="POST">
+{% csrf_token %}
+<select name="newQuestionCollection" >
+{% for collection in collectionList %}
+<option value="{{collection.id}}">{{collection.name}}</option>
+{% endfor %}
+<input type="text" name="newQuestionQuestion" />
+<input type="submit" value="Add" />
+</form>
