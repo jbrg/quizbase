@@ -1,0 +1,30 @@
+<form action="/quiz/save/question/{{question_id}}/" method="POST">
+{% csrf_token %}
+New question: <br />
+<input type="text" name="editQuestionNewQuestion">
+<input type="submit" value="Save">
+</form>
+<br />
+Edit choices: <br />
+<form action="/quiz/save/choice/{{question_id}}/" method="POST">
+{% csrf_token %}
+<select name="editChoiceId">
+{% for choice in choiceList %}
+<option value="{{choice.id}}">{{choice.choice}}</option>
+{% endfor %}
+</select>
+<input type="text" name="editChoiceNewChoice">
+<input type="submit" value="Save">
+</form>
+<br />
+Or add a new choice:<br />
+<form action="/quiz/add/choice/{{question_id}}/" method="post">
+{% csrf_token %}
+  <input type="text" name="newChoiceChoice">
+  <input type="radio" name="correctAnswer" id="true" value="1">
+  <label for="true">True</label>
+  <input type="radio" name="correctAnswer" id="false" value="0">
+  <label for="false">False</label>
+  <input type="submit" value="Add">
+</form>
+<a href="/quiz/">Back</a>

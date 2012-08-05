@@ -121,22 +121,45 @@ def addChoice(request, question_id):
         newCorrectAnswer.save()
     else:
         pass
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))    
 
 def editQuestion(request):
     question_id = request.POST['editQuestionId']
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
+
+def editForm(request, question_id):
+    question = Question.objects.get(pk=question_id)
+    choiceList = question.choice_set.all()
+    return render_to_response("quiz/edit/question.html",
+                              {"question_id": question_id,
+                               "question": question,
+                               "choiceList": choiceList},
+                              context_instance=RequestContext(request))
+
+
+def saveQuestion(request, question_id):
     editQuestionNewQuestion = request.POST['editQuestionNewQuestion']
     editQuestion = Question.objects.get(pk=question_id)
     editQuestion.question = editQuestionNewQuestion
     editQuestion.save()
-    #if editQuestion.question == editQuestionNewQuestion:
-    #    result = "Success!"
-    #else:
-    #    result = "Fail..."
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
+
+def saveChoice(request, question_id):
+    editChoiceId = request.POST['editChoiceId']
+    editChoiceNewChoice = request.POST['editChoiceNewChoice']
+    editChoice = Choice.objects.get(pk=editChoiceId)
+    editChoice.choice = editChoiceNewChoice
+    editChoice.save()
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
 
 def deleteQuestion(request):
     question_id = request.POST['deleteQuestionId']
     deleteQuestion = Question.objects.get(pk=question_id)
     deleteQuestion.delete()
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
+
+def deleteCollection(request):
+    collection_id = request.POST['deleteCollectionId']
+    deleteCollection = Collection.objects.get(pk=collection_id)
+    deleteCollection.delete()
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
