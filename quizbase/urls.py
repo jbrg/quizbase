@@ -31,4 +31,6 @@ urlpatterns += patterns('quizbase.apps.quiz.views',
                         url(r'^quiz/add/question/$', 'addQuestion'),
                         url(r'^quiz/new/choice/(?P<question_id>\d+)/$', 'newChoice'),
                         url(r'^quiz/add/choice/(?P<question_id>\d+)/$', 'addChoice'),
+                        url(r'^quiz/edit/$', 'editQuestion'),
+                        #url(r'^quiz/edit/question/(?P<question_id>\d+)/$', 'editQuestion'),
 )

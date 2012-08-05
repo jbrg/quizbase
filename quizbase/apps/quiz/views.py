@@ -7,8 +7,10 @@ from quizbase.apps.quiz.models import *
 
 def index(request):
     collectionList = Collection.objects.all()
+    questionList = Question.objects.all()
     return render_to_response("quiz/index.html", 
-                              {"collectionList": collectionList},
+                              {"collectionList": collectionList,
+                               "questionList": questionList},
                               context_instance=RequestContext(request))
 
 def listCollections(request):
@@ -121,36 +123,22 @@ def addChoice(request, question_id):
         pass
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))
 
-# def addQuestion(request):
-#     newQuestionEntry = Question()
-#     collectionToAddTo = Collection.objects.get(pk=request.POST['newQuestionCollection'])
-#     newQuestionEntry.collection = collectionToAddTo
-#     newQuestionEntry.question = request.POST['newQuestion']
-#     newQuestionEntry.save()
-    
-#     choice1 = Choice()
-#     choice1.question = newQuestionEntry
-#     choice1.choice = request.POST['newQuestionChoice1']
-#     choice1.save()
-    
-#     choice2 = Choice()
-#     choice2.question = newQuestionEntry
-#     choice2.choice = request.POST['newQuestionChoice2']
-#     choice2.save()
-    
-#     choice3 = Choice()
-#     choice3.question = newQuestionEntry
-#     choice3.choice = request.POST['newQuestionChoice3']
-#     choice3.save()
-    
-#     choice4 = Choice()
-#     choice4.question = newQuestionEntry
-#     choice4.choice = request.POST['newQuestionChoice4']
-#     choice4.save()
-    
-#     correctAnswer = CorrectAnswer()
-#     correctAnswer.question = newQuestionEntry
-#     correctAnswer.answer = choice1
-#     correctAnswer.save()
-    
-#     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newQuestion", args={}))
+# def editForm(request):
+#     question_id = request.POST['editQuestionId']
+#     editQuestion = Question.objects.get(pk=question_id)
+#     return render_to_response("quiz/edit/edit.html",
+#                               {"editQuestion": editQuestion,
+#                                "question_id": question_id},
+#                               context_instance=RequestContext(request))
+
+def editQuestion(request):
+    question_id = request.POST['editQuestionId']
+    editQuestionNewQuestion = request.POST['editQuestionNewQuestion']
+    editQuestion = Question.objects.get(pk=question_id)
+    editQuestion.question = editQuestionNewQuestion
+    editQuestion.save()
+    #if editQuestion.question == editQuestionNewQuestion:
+    #    result = "Success!"
+    #else:
+    #    result = "Fail..."
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
