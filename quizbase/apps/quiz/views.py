@@ -123,14 +123,6 @@ def addChoice(request, question_id):
         pass
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))
 
-# def editForm(request):
-#     question_id = request.POST['editQuestionId']
-#     editQuestion = Question.objects.get(pk=question_id)
-#     return render_to_response("quiz/edit/edit.html",
-#                               {"editQuestion": editQuestion,
-#                                "question_id": question_id},
-#                               context_instance=RequestContext(request))
-
 def editQuestion(request):
     question_id = request.POST['editQuestionId']
     editQuestionNewQuestion = request.POST['editQuestionNewQuestion']
@@ -141,4 +133,10 @@ def editQuestion(request):
     #    result = "Success!"
     #else:
     #    result = "Fail..."
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
+
+def deleteQuestion(request):
+    question_id = request.POST['deleteQuestionId']
+    deleteQuestion = Question.objects.get(pk=question_id)
+    deleteQuestion.delete()
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))

@@ -24,6 +24,7 @@ New question: <br />
 {% for collection in collectionList %}
 <option value="{{collection.id}}">{{collection.name}}</option>
 {% endfor %}
+<br />
 <input type="text" name="newQuestionQuestion" />
 <input type="submit" value="Add" />
 </form>
@@ -36,6 +37,18 @@ Edit question: <br />
 {% for question in questionList %}
 <option value="{{question.id}}">{{question.question}}</option>
 {% endfor %}
+<br />
 <input type="text" name="editQuestionNewQuestion" />
 <input type="submit" value="Edit" />
+</form>
+<br />
+<h1>Delete stuff</h1>
+<form action="/quiz/delete/question/" method="POST">
+{% csrf_token %}
+Delete question:<br />
+<select name="deleteQuestionId">
+{% for question in questionList %}
+<option value="{{question.id}}">{{question.question}}</option>
+{% endfor %}
+<input type="submit" value="Delete" />
 </form>
