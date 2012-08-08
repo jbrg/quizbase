@@ -1,4 +1,3 @@
-# Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
@@ -12,6 +11,8 @@ def index(request):
                               {"collectionList": collectionList,
                                "questionList": questionList},
                               context_instance=RequestContext(request))
+
+#### Stuff for browsing through collections, questions and stuff ####
 
 def listCollections(request):
     collectionList = Collection.objects.all()
@@ -68,6 +69,10 @@ def nextQuestion(request, question_id):
     question_id = questionList[questionIndice].id   
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
+#### Stuff for adding new collections, questions, choices and stuff ####
+#### this functions is basically divided into two groups, new and add
+#### new* will retreive data from forms on index and render specific forms
+#### add* will retrieve data from the specific forms and save it to the database
 
 def addCollection(request):
     newCollectionName = request.POST['newCollectionName']
@@ -79,49 +84,52 @@ def addCollection(request):
     newCollection.save()
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.index"))
 
-def newQuestion(request):
-    collection_id = request.POST['collection_id']
-    return render_to_response("quiz/newQuestion.html",
-                              {"collectionList": collectionList},
-                              context_instance=RequestContext(request))
-
 def addQuestion(request):
-    newQuestionQuestion = request.POST['newQuestionQuestion']
-    collection_id = request.POST['newQuestionCollection']
-    if Question.objects.filter(question__exact=newQuestionQuestion):
+        newQuestionQuestion = request.POST['newQuestionQuestion']
+        collection_id = request.POST['newQuestionCollection']
+        if Question.objects.filter(question__exact=newQuestionQuestion):
         #return error stuff here
         #Also, we probably want to be able to have the same question in different objects in different collections
-        pass
-    newQuestion = Question()
-    newQuestion.question = newQuestionQuestion
-    newQuestion.collection = Collection.objects.get(pk=collection_id)
-    newQuestion.save()
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={newQuestion.id}))
+            pass
+        newQuestion = Question()
+        newQuestion.question = newQuestionQuestion
+        newQuestion.collection = Collection.objects.get(pk=collection_id)
+        newQuestion.save()
+        return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={newQuestion.id}))
+
+# def newChoice(request, question_id):
+#     return render_to_response("quiz/new/choice.html",
+#                               {"question_id": question_id},
+#                               context_instance=RequestContext(request))
 
 def newChoice(request, question_id):
-    return render_to_response("quiz/new/choice.html",
-                              {"question_id": question_id},
-                              context_instance=RequestContext(request))
-
-def addChoice(request, question_id):
-    newChoiceChoice = request.POST['newChoiceChoice']
-    correctAnswer = int(request.POST['correctAnswer'])
-    if Choice.objects.filter(choice__exact=newChoiceChoice):
+    if request.method == 'POST':
+        newChoiceChoice = request.POST['newChoiceChoice']
+        correctAnswer = int(request.POST['correctAnswer'])
+        if Choice.objects.filter(choice__exact=newChoiceChoice):
         #return error stuff
         #We don't want duplicate choices to the same question
-        pass
-    newChoice = Choice()
-    newChoice.choice = newChoiceChoice
-    newChoice.question = Question.objects.get(pk=question_id)
-    newChoice.save()
-    if correctAnswer == 1:
-        newCorrectAnswer = CorrectAnswer()
-        newCorrectAnswer.question = Question.objects.get(pk=question_id)
-        newCorrectAnswer.answer = newChoice
-        newCorrectAnswer.save()
+            pass
+        newChoice = Choice()
+        newChoice.choice = newChoiceChoice
+        newChoice.question = Question.objects.get(pk=question_id)
+        newChoice.save()
+        if correctAnswer == 1:
+            newCorrectAnswer = CorrectAnswer()
+            newCorrectAnswer.question = Question.objects.get(pk=question_id)
+            newCorrectAnswer.answer = newChoice
+            newCorrectAnswer.save()
+        else:
+            pass
+        return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))
     else:
-        pass
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.newChoice", args={question_id}))    
+        return render_to_response("quiz/new/choice.html",
+                                  {"question_id": question_id},
+                                  context_instance=RequestContext(request))
+  
+
+#### Stuff for editing collections, question, choices and stuff ####
+#### comments from the previous section more or less applies here, except here we have edit/save
 
 def editQuestion(request):
     question_id = request.POST['editQuestionId']
@@ -145,12 +153,35 @@ def saveQuestion(request, question_id):
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
 
 def saveChoice(request, question_id):
+    ## retrieve data
     editChoiceId = request.POST['editChoiceId']
     editChoiceNewChoice = request.POST['editChoiceNewChoice']
+    correctAnswer = int(request.POST['correctAnswer'])
     editChoice = Choice.objects.get(pk=editChoiceId)
-    editChoice.choice = editChoiceNewChoice
-    editChoice.save()
+
+    ## save new choice 
+    if editChoiceNewChoice:
+        editChoice.choice = editChoiceNewChoice
+        editChoice.save()
+    else:
+        pass
+
+    ## create or remove CorrectAnswer entry
+    if correctAnswer == 1:
+        newCorrectAnswer = CorrectAnswer()
+        newCorrectAnswer.question = Question.objects.get(pk=question_id)
+        newCorrectAnswer.answer = editChoice
+        newCorrectAnswer.save()
+    elif correctAnswer == 0:
+        if editChoice.correctanswer_set.all():
+            editChoice.correctanswer_set.all().delete()
+        else:
+            pass
+    else:
+        pass
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
+
+#### Stuff for deleting collections, questions, choices and junk ####
 
 def deleteQuestion(request):
     question_id = request.POST['deleteQuestionId']

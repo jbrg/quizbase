@@ -4,6 +4,9 @@ New question: <br />
 <input type="text" name="editQuestionNewQuestion">
 <input type="submit" value="Save">
 </form>
+{% if editQuestionResult %}
+<h1>{{editQuestionResult}}</h1>
+{% endif %}
 <br />
 Edit choices: <br />
 <form action="/quiz/save/choice/{{question_id}}/" method="POST">
@@ -14,8 +17,15 @@ Edit choices: <br />
 {% endfor %}
 </select>
 <input type="text" name="editChoiceNewChoice">
+<input type="radio" name="correctAnswer" id="true" value="1">
+<label for="true">True</label>
+<input type="radio" name="correctAnswer" id="false" value="0">
+<label for="false">False</label>
 <input type="submit" value="Save">
 </form>
+{% if editChoiceResult %}
+<h1>{{editChoiceResult}}</h1>
+{% endif %}
 <br />
 Or add a new choice:<br />
 <form action="/quiz/add/choice/{{question_id}}/" method="post">
@@ -27,4 +37,7 @@ Or add a new choice:<br />
   <label for="false">False</label>
   <input type="submit" value="Add">
 </form>
+{% if addChoiceResult %}
+<h1>{{addChoiceResult}}</h1>
+{% endif %}
 <a href="/quiz/">Back</a>
