@@ -46,27 +46,51 @@ def correctQuestion(request, question_id):
                               context_instance=RequestContext(request))
 
 def previousQuestion(request, question_id):
+    ## Get questions in collection using current question id
     currentQuestion = Question.objects.get(pk=question_id)
     questionList = currentQuestion.collection.question_set.all()
+    
+    ## We need to find out where in the list the question is, this is done by:
+    ## Iterate over the questions and check for an id matching current question id
+    ## if match, remember where in the list that object is 
     for i, question in enumerate(questionList):
         if question.id == currentQuestion.id:
-            questionIndice = i
-    questionIndice -= 1
-    if questionIndice < 0:
-        questionIndice = (len(questionList) - 1)
-    question_id = questionList[questionIndice].id
+            questionIndex = i
+        else:
+            pass
+    
+    ## Then we take that index and decrease it by one
+    ## And if necessary, wrap it to avoid index out of range error
+    questionIndex -= 1
+    if questionIndex < 0:
+        questionIndex = (len(questionList) - 1)
+    else:
+        pass
+    question_id = questionList[questionIndex].id
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
 def nextQuestion(request, question_id):
+    ## Get questions in collection using current question id
     currentQuestion = Question.objects.get(pk=question_id)
     questionList = currentQuestion.collection.question_set.all()
+    
+    ## We need to find out where in the list the question is, this is done by:
+    ## Iterate over the questions and check for an id matching current question id
+    ## if match, remember where in the list that object is 
     for i, question in enumerate(questionList):
         if question.id == currentQuestion.id:
-            questionIndice = i
-    questionIndice += 1
-    if questionIndice == len(questionList):
-        questionIndice = 0
-    question_id = questionList[questionIndice].id   
+            questionIndex = i
+        else:
+            pass
+
+    ## Then we take that index and increase it by on
+    ## and if necessary, wrap it to avoid index out of range error
+    questionIndex += 1
+    if questionIndex == len(questionList):
+        questionIndex = 0
+    else:
+        pass
+    question_id = questionList[questionIndex].id   
     return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.viewQuestion", args={question_id}))
 
 #### Stuff for adding new collections, questions, choices and stuff ####
