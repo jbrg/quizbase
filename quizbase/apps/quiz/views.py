@@ -155,26 +155,25 @@ def newChoice(request, question_id):
 #### Stuff for editing collections, question, choices and stuff ####
 #### comments from the previous section more or less applies here, except here we have edit/save
 
-def editQuestion(request):
-    question_id = request.POST['editQuestionId']
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
-
-def editForm(request, question_id):
-    question = Question.objects.get(pk=question_id)
-    choiceList = question.choice_set.all()
-    return render_to_response("quiz/edit/question.html",
-                              {"question_id": question_id,
-                               "question": question,
-                               "choiceList": choiceList},
-                              context_instance=RequestContext(request))
-
+def editQuestion(request, question_id=0):
+    if request.path == '/quiz/edit/question/':
+        question_id = request.POST['editQuestionId']
+        return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editQuestion", args={question_id}))
+    elif request.path == '/quiz/edit/question/'+question_id+'/':
+        question = Question.objects.get(pk=question_id)
+        choiceList = question.choice_set.all()
+        return render_to_response("quiz/edit/question.html",
+                                  {"question_id": question_id,
+                                   "question": question,
+                                   "choiceList": choiceList},
+                                  context_instance=RequestContext(request))
 
 def saveQuestion(request, question_id):
     editQuestionNewQuestion = request.POST['editQuestionNewQuestion']
     editQuestion = Question.objects.get(pk=question_id)
     editQuestion.question = editQuestionNewQuestion
     editQuestion.save()
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editQuestion", args={question_id}))
 
 def saveChoice(request, question_id):
     ## retrieve data
@@ -203,7 +202,7 @@ def saveChoice(request, question_id):
             pass
     else:
         pass
-    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editForm", args={question_id}))
+    return HttpResponseRedirect(reverse("quizbase.apps.quiz.views.editQuestion", args={question_id}))
 
 #### Stuff for deleting collections, questions, choices and junk ####
 
