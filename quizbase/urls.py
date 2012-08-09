@@ -38,3 +38,7 @@ urlpatterns += patterns('quizbase.apps.quiz.views',
                         url(r'^quiz/delete/question/$', 'deleteQuestion'),
                         url(r'^quiz/delete/collection/$', 'deleteCollection'),
 )
+
+urlpatterns += patterns('quizbase.apps.flash.views',
+                        url(r'^flash/$', 'index'),
+)
