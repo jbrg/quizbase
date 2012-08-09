@@ -1,0 +1,8 @@
+{% if cards %}
+<h1>{{collection.name}}</h1>
+<ul>
+{% for card in cards %}
+<li><a href="/flash/view/card/{{card.id}}/">{{card.question}}</a></li>
+{% endfor %}
+</ul>
+{% endif %}

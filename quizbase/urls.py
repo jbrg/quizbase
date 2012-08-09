@@ -41,4 +41,7 @@ urlpatterns += patterns('quizbase.apps.quiz.views',
 
 urlpatterns += patterns('quizbase.apps.flash.views',
                         url(r'^flash/$', 'index'),
+                        url(r'^flash/view/collection/(?P<collectionId>\d+)/$', 'viewCollection'),
+                        url(r'^flash/view/card/(?P<cardId>\d+)/\w*/*$', 'viewCard'),
+                        url(r'^flash/view/card/(?P<cardId>\d+)/\w*/\w+/$', 'cycleCard'),
 )

@@ -18,10 +18,10 @@ def listCollections(request):
     return render_to_response('flash/collections.html',
                               {'collections': collections})
 
-def browseCollection(request, collectionId):
+def viewCollection(request, collectionId):
     collection = Collection.objects.get(pk=collectionId)
     cards = collection.card_set.all()
-    return render_to_response('flash/collection.html',
+    return render_to_response('flash/view/collection.html',
                               {'collection': collection,
                                'cards': cards})
 
@@ -34,4 +34,4 @@ def viewCard(request, cardId):
         return render_to_response('flash/view/card.html',
                                   {'cardText': card.answer})
     else:
-        pass
+        return render_to_response('flash/view/card.html')
